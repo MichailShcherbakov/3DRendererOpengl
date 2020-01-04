@@ -1,0 +1,228 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Shaders">
+      <UniqueIdentifier>{46c6dc1c-64d1-4c3a-9107-e9ddbcc4f483}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LogSystem">
+      <UniqueIdentifier>{295d6ae7-46e5-4e9f-87ce-ebe0500d875e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RenderPipeline">
+      <UniqueIdentifier>{a83092b1-7a2a-45b5-92ad-c99b0fe7d5d4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader">
+      <UniqueIdentifier>{190930d6-afee-4733-90a8-3f81df3e28e3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Camera">
+      <UniqueIdentifier>{1ca25ac2-140b-4949-88c9-8e747a44c293}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Picking Texture">
+      <UniqueIdentifier>{30dab8c5-105b-4ab6-8f52-793865b6800a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders\Common">
+      <UniqueIdentifier>{b356a9dc-bf4c-403d-94f6-40c4a71b2ec2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders\Picking">
+      <UniqueIdentifier>{a74cba35-edc4-41c9-bc19-60f2a929f1ad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders\BoundingBox">
+      <UniqueIdentifier>{94f5be6d-7518-4813-af5d-92dcf8803d8d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Bounding Box">
+      <UniqueIdentifier>{bc1e356c-8005-4dd1-9644-270dd181e059}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders\Reference Grid">
+      <UniqueIdentifier>{5287330a-7f50-46f7-9f49-184f6cb16de5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Reference Grid">
+      <UniqueIdentifier>{a6ae408a-592d-49ab-8709-fbc177318abb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MovebleArrows">
+      <UniqueIdentifier>{ed456ce4-b15e-4cd6-945c-7f549bc6a106}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders\MovableArrows">
+      <UniqueIdentifier>{1cfe1df0-d1ee-49ec-ba31-e9f1e5cd6821}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Material">
+      <UniqueIdentifier>{91eb5880-0fb3-474c-acb7-afa09e1ec50c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MaterialLibrary">
+      <UniqueIdentifier>{d4a2cc85-a56a-44c3-85e2-5b4fe2672099}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Interfaces">
+      <UniqueIdentifier>{50a062f2-1c0a-49ac-8fd1-96c9a207e7ad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Mesh">
+      <UniqueIdentifier>{d563e643-49e2-4fdf-bd52-eb83e35ecb5a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ObjLoader">
+      <UniqueIdentifier>{e2ff0adc-1fd7-4337-8274-0e79c1d7da1c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object">
+      <UniqueIdentifier>{7ec505ac-1a24-4e4c-86c9-e550b13bc338}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SkyBox">
+      <UniqueIdentifier>{faa58f79-ffca-491e-81c3-03ece323c112}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders\Skybox">
+      <UniqueIdentifier>{f1e0461a-7a10-4ee8-8e74-61817f31c4e1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Texture2D">
+      <UniqueIdentifier>{e0963e3e-d77e-487b-8cbd-c0ebc0bd032e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CubeTexture">
+      <UniqueIdentifier>{9ab150cf-acdb-42d7-8ee4-74bb572a2a2a}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="LogSystem.cpp">
+      <Filter>LogSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="StdAfx.cpp" />
+    <ClCompile Include="RenderPipeline.cpp">
+      <Filter>RenderPipeline</Filter>
+    </ClCompile>
+    <ClCompile Include="Shader.cpp">
+      <Filter>Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="PickingTexture.cpp">
+      <Filter>Picking Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="BoundingBox.cpp">
+      <Filter>Bounding Box</Filter>
+    </ClCompile>
+    <ClCompile Include="ReferenceGrid.cpp">
+      <Filter>Reference Grid</Filter>
+    </ClCompile>
+    <ClCompile Include="MovableArrows.cpp">
+      <Filter>MovebleArrows</Filter>
+    </ClCompile>
+    <ClCompile Include="Material.cpp">
+      <Filter>Material</Filter>
+    </ClCompile>
+    <ClCompile Include="MaterialLibrary.cpp">
+      <Filter>MaterialLibrary</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjLoader.cpp">
+      <Filter>ObjLoader</Filter>
+    </ClCompile>
+    <ClCompile Include="Object.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Skybox.cpp">
+      <Filter>SkyBox</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture2D.cpp">
+      <Filter>Texture2D</Filter>
+    </ClCompile>
+    <ClCompile Include="CubeTexture.cpp">
+      <Filter>CubeTexture</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Params.h" />
+    <ClInclude Include="LogSystem.h">
+      <Filter>LogSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="StdAfx.h" />
+    <ClInclude Include="RenderPipeline.h">
+      <Filter>RenderPipeline</Filter>
+    </ClInclude>
+    <ClInclude Include="Shader.h">
+      <Filter>Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="ILoader.h">
+      <Filter>Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="PickingTexture.h">
+      <Filter>Picking Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="BoundingBox.h">
+      <Filter>Bounding Box</Filter>
+    </ClInclude>
+    <ClInclude Include="ReferenceGrid.h">
+      <Filter>Reference Grid</Filter>
+    </ClInclude>
+    <ClInclude Include="MovableArrows.h">
+      <Filter>MovebleArrows</Filter>
+    </ClInclude>
+    <ClInclude Include="Material.h">
+      <Filter>Material</Filter>
+    </ClInclude>
+    <ClInclude Include="MaterialLibrary.h">
+      <Filter>MaterialLibrary</Filter>
+    </ClInclude>
+    <ClInclude Include="IMaterialLibrary.h">
+      <Filter>Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="IRenderListener.h">
+      <Filter>Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjLoader.h">
+      <Filter>ObjLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="Object.h">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Skybox.h">
+      <Filter>SkyBox</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture2D.h">
+      <Filter>Texture2D</Filter>
+    </ClInclude>
+    <ClInclude Include="CubeTexture.h">
+      <Filter>CubeTexture</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="pickingShader.vert">
+      <Filter>Shaders\Picking</Filter>
+    </None>
+    <None Include="pickingShader.frag">
+      <Filter>Shaders\Picking</Filter>
+    </None>
+    <None Include="commonShader.frag">
+      <Filter>Shaders\Common</Filter>
+    </None>
+    <None Include="commonShader.vert">
+      <Filter>Shaders\Common</Filter>
+    </None>
+    <None Include="boundingBoxShader.vert">
+      <Filter>Shaders\BoundingBox</Filter>
+    </None>
+    <None Include="boundingBoxShader.frag">
+      <Filter>Shaders\BoundingBox</Filter>
+    </None>
+    <None Include="referenceGridShader.frag">
+      <Filter>Shaders\Reference Grid</Filter>
+    </None>
+    <None Include="referenceGridShader.vert">
+      <Filter>Shaders\Reference Grid</Filter>
+    </None>
+    <None Include="movableArrowsShader.frag">
+      <Filter>Shaders\MovableArrows</Filter>
+    </None>
+    <None Include="movableArrowsShader.vert">
+      <Filter>Shaders\MovableArrows</Filter>
+    </None>
+    <None Include="skyboxShader.frag">
+      <Filter>Shaders\Skybox</Filter>
+    </None>
+    <None Include="skyboxShader.vert">
+      <Filter>Shaders\Skybox</Filter>
+    </None>
+  </ItemGroup>
+</Project>
