@@ -8,11 +8,16 @@ class ReferenceGrid : public IRenderListener
 {
 public:
 	ReferenceGrid(float width, float length);
-	~ReferenceGrid();
+	~ReferenceGrid() override;
 
 public:
 	// IRenderListener
 	virtual void Draw(Shader& shader) override;
+	virtual void MousePressEvent(MouseEvent* event) override;
+	virtual void MouseReleaseEvent(MouseEvent* event) override;
+	virtual void MouseMoveEvent(MouseEvent* event) override;
+	virtual void KeyPressEvent(KeyEvent* event) override;
+	virtual void KeyReleaseEvent(KeyEvent* event) override;
 	// ~IRenderListener
 
 public:

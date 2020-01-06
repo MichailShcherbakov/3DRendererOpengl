@@ -16,59 +16,74 @@ size_t IRenderListener::count = 0;
 #include "MovableArrows.h"
 #include "MaterialLibrary.h"
 
-#include "glfw3.h"
+#include "glfw/glfw3.h"
 #include "boost/filesystem.hpp"
 #include "Skybox.h"
+#include "Billboard.h"
 
 Camera camera;
 PickingTexture pickingTexture;
 bool isSetMode = false;
+int64_t delta;
+float deltaTime;
+
+struct {
+	float x;
+	float y;
+	bool hasPos = false;
+} mousePos;
 
 void window_size_callback(GLFWwindow* window, int width, int height)
 {
 	glViewport(0, 0, width, height);
 	pickingTexture.Initialize(width, height);
+	camera.SetAspect((float)width, (float)height);
+}
+
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
+{
+	camera.ProcessMouseScroll(yoffset);
 }
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-	if (action == GLFW_PRESS)
+	/*if (action == GLFW_PRESS)
 	{
 		switch (key)
 		{
+		case GLFW_KEY_ESCAPE:
+		{
+			glfwSetWindowShouldClose(window, true);
+			break;
+		}
 		case GLFW_KEY_W:
 		{
-			camera.ProcessKeyboard(ECameraMovement::FORWARD);
+			camera.m_movement.z -= 1;
 			break;
 		}
 		case GLFW_KEY_A:
 		{
-			camera.ProcessKeyboard(ECameraMovement::LEFT);
+			camera.m_movement.x -= 1;
 			break;
 		}
 		case GLFW_KEY_S:
 		{
-			camera.ProcessKeyboard(ECameraMovement::BACKWARD);
+			camera.m_movement.z += 1;
 			break;
 		}
 		case GLFW_KEY_D:
 		{
-			camera.ProcessKeyboard(ECameraMovement::RIGHT);
+			camera.m_movement.x += 1;
 			break;
 		}
-		case GLFW_KEY_X:
+		case GLFW_KEY_Z:
 		{
 			if (!isSetMode)
-			{
 				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-				isSetMode = true;
-			}
 			else
-			{
 				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-				isSetMode = false;
-			}
 
+			isSetMode = !isSetMode;
 			break;
 		}
 		}
@@ -78,35 +93,35 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		switch (key)
 		{
 		case GLFW_KEY_W:
-		{
-			camera.ProcessKeyboard(ECameraMovement::FORWARD, true);
-			break;
-		}
-		case GLFW_KEY_A:
-		{
-			camera.ProcessKeyboard(ECameraMovement::LEFT, true);
-			break;
-		}
 		case GLFW_KEY_S:
-		{
-			camera.ProcessKeyboard(ECameraMovement::BACKWARD, true);
+			camera.m_movement.z = 0;
 			break;
-		}
+		case GLFW_KEY_A:
 		case GLFW_KEY_D:
-		{
-			camera.ProcessKeyboard(ECameraMovement::RIGHT, true);
+			camera.m_movement.x = 0;
 			break;
 		}
-		}
-	}
+	}*/
 }
 
 void cursor_position_callback(GLFWwindow* window, double xpos, double ypos)
 {
-	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS ||
-		glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS)
+	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
 	{
-		camera.ProcessMouseMovement((float)xpos, (float)ypos);
+		if (!mousePos.hasPos)
+		{
+			mousePos.x = xpos;
+			mousePos.y = ypos;
+			mousePos.hasPos = true;
+		}
+
+		float xoffset = xpos - mousePos.x;
+		float yoffset = mousePos.y - ypos;
+
+		mousePos.x = xpos;
+		mousePos.y = ypos;
+
+		camera.ProcessMouseMovement(xoffset, yoffset);
 	}
 }
 
@@ -117,29 +132,67 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 		switch (button)
 		{
 		case GLFW_MOUSE_BUTTON_LEFT:
-		case GLFW_MOUSE_BUTTON_RIGHT:
 		{
 			double posX, posY;
 			glfwGetCursorPos(window, &posX, &posY);
-			camera.ProcessMousePosition(static_cast<float>(posX), static_cast<float>(posY));
+			mousePos.x = (float)posX;
+			mousePos.y = (float)posY;
 			break;
 		}
 		}
 	}
+
+	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
+	{
+		Shader pickingShader(boost::filesystem::absolute("pickingShader.vert").string().c_str(), boost::filesystem::absolute("pickingShader.frag").string().c_str());
+
+		pickingShader.Use();
+		pickingShader.SetMat4("projection", camera.MakeProjectionMatrix());
+		pickingShader.SetMat4("view", camera.MakeViewMatrix());
+
+		pickingTexture.EnableWriting();
+		gParams->gRenderPipeline->Draw(pickingShader);
+		pickingTexture.DisableWriting();
+
+		int width, height;
+		glfwGetWindowSize(window, &width, &height);
+
+		double posX, posY;
+		glfwGetCursorPos(window, &posX, &posY);
+		auto pixel = pickingTexture.ReadPixel((size_t)posX, (size_t)(height - posY - 1));
+
+		MouseEvent mouseEvent;
+		gParams->gRenderPipeline->MousePressEvent(&mouseEvent, pixel.ObjectID);
+	}
 }
 
+void processInput(GLFWwindow* window)
+{
+	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+		glfwSetWindowShouldClose(window, true);
 
+	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+		camera.ProcessKeyboard(ECameraMovement::FORWARD, deltaTime);
+	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+		camera.ProcessKeyboard(ECameraMovement::BACKWARD, deltaTime);
+	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+		camera.ProcessKeyboard(ECameraMovement::LEFT, deltaTime);
+	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+		camera.ProcessKeyboard(ECameraMovement::RIGHT, deltaTime);
+}
 
-void RenderCube(Shader& shader, Texture2D& diffuseMap, Texture2D& normalMap)
+void RenderCube(Shader& shader, Texture2D& diffuseMap, Texture2D& normalMap, CubeTexture& cubeTexture)
 {
 	shader.SetMat4("model", glm::mat4(1.0f));
 
-	shader.SetInt("diffuseMap", 0);
+	shader.SetInt("skybox", 0);
+
+	/*shader.SetInt("diffuseMap", 0);
 	shader.SetInt("normalMap", 1);
 	shader.SetVec3("material.ambientColor", glm::vec3(0.6f));
 	shader.SetVec3("material.diffuseColor", glm::vec3(1.0f));
 	shader.SetVec3("material.specularColor", glm::vec3(0.8f));
-	shader.SetFloat("material.shininess", 512.0f);
+	shader.SetFloat("material.shininess", 512.0f);*/
 
 	Vertex vertices[] = {
 		// bottom
@@ -232,37 +285,40 @@ void RenderCube(Shader& shader, Texture2D& diffuseMap, Texture2D& normalMap)
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-	glActiveTexture(GL_TEXTURE0);
+	/*glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, diffuseMap.GetHandle());
 	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, normalMap.GetHandle());
+	glBindTexture(GL_TEXTURE_2D, normalMap.GetHandle());*/
+	
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, cubeTexture.GetHandle());
 
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
-	glEnableVertexAttribArray(2);
+	/*glEnableVertexAttribArray(2);
 	glEnableVertexAttribArray(3);
-	glEnableVertexAttribArray(4);
+	glEnableVertexAttribArray(4);*/
 
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)0);
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)(sizeof(glm::vec3) ));
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)(sizeof(glm::vec3) * 2 ));
+	/*glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)(sizeof(glm::vec3) * 2 ));
 	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)(sizeof(glm::vec3) * 2 + sizeof(glm::vec2)));
 	glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)(sizeof(glm::vec3) * 3 + sizeof(glm::vec2)));
-
+	*/
 	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_SHORT, (const void*)0);
 
 	glDisableVertexAttribArray(0);
 	glDisableVertexAttribArray(1);
-	glDisableVertexAttribArray(2);
+	/*glDisableVertexAttribArray(2);
 	glDisableVertexAttribArray(3);
-	glDisableVertexAttribArray(4);
+	glDisableVertexAttribArray(4);*/
 
 	glDeleteVertexArrays(1, &VAO);
 	glDeleteBuffers(1, &VBO);
 	glDeleteBuffers(1, &IBO);
 
 	glBindVertexArray(0);
-	glBindTexture(GL_TEXTURE_2D, 0);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
@@ -288,10 +344,13 @@ int main()
 
 	glfwMakeContextCurrent(window);
 
+	//glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
 	glfwSetWindowSizeCallback(window, window_size_callback);
 	glfwSetKeyCallback(window, key_callback);
 	glfwSetCursorPosCallback(window, cursor_position_callback);
 	glfwSetMouseButtonCallback(window, mouse_button_callback);
+	glfwSetScrollCallback(window, scroll_callback);
 
 	glewInit();
 
@@ -299,17 +358,16 @@ int main()
 
 	int width, height;
 	glfwGetWindowSize(window, &width, &height);
-
-	glViewport(0, 0, width, height);
-	pickingTexture.Initialize(width, height);
+	window_size_callback(window, width, height);
 
 	gParams->gRenderPipeline = new RenderPipeline();
 	Shader commonShader(boost::filesystem::absolute("commonShader.vert").string().c_str(), boost::filesystem::absolute("commonShader.frag").string().c_str());
-	Shader pickingShader(boost::filesystem::absolute("pickingShader.vert").string().c_str(), boost::filesystem::absolute("pickingShader.frag").string().c_str());
 	Shader boundingBoxShader(boost::filesystem::absolute("boundingBoxShader.vert").string().c_str(), boost::filesystem::absolute("boundingBoxShader.frag").string().c_str());
 	Shader referenceGridShader(boost::filesystem::absolute("referenceGridShader.vert").string().c_str(), boost::filesystem::absolute("referenceGridShader.frag").string().c_str());
 	Shader movableArrowsShader(boost::filesystem::absolute("movableArrowsShader.vert").string().c_str(), boost::filesystem::absolute("movableArrowsShader.frag").string().c_str());
 	Shader skyboxShader(boost::filesystem::absolute("skyboxShader.vert").string().c_str(), boost::filesystem::absolute("skyboxShader.frag").string().c_str());
+	Shader billboardingShader(boost::filesystem::absolute("billboardingShader.vert").string().c_str(), boost::filesystem::absolute("billboardingShader.frag").string().c_str(), boost::filesystem::absolute("billboardingShader.geom").string().c_str());
+	Shader reflectionShader(boost::filesystem::absolute("reflectionShader.vert").string().c_str(), boost::filesystem::absolute("reflectionShader.frag").string().c_str());
 	BoundingBox boundingBox;
 	ReferenceGrid referenceGrid(20, 20);
 	MovableArrows movableArrows;
@@ -325,82 +383,61 @@ int main()
 	Texture2D normalMap(boost::filesystem::absolute("Textures/Brick_Wall_Normal.jpg").string(), true);
 
 	CubeTexture cubeTexture({
-		boost::filesystem::absolute("Textures/Skybox/lagoon_ft.tga").string(), // front
-		boost::filesystem::absolute("Textures/Skybox/lagoon_bk.tga").string(), // back
-		boost::filesystem::absolute("Textures/Skybox/lagoon_dn.tga").string(), // down
-		boost::filesystem::absolute("Textures/Skybox/lagoon_up.tga").string(), // up
-		boost::filesystem::absolute("Textures/Skybox/lagoon_rt.tga").string(), // right
-		boost::filesystem::absolute("Textures/Skybox/lagoon_lf.tga").string(), // left
+		boost::filesystem::absolute("Textures/Skybox/right.jpg").string(),			// right
+		boost::filesystem::absolute("Textures/Skybox/left.jpg").string(),			// left
+		boost::filesystem::absolute("Textures/Skybox/top.jpg").string(),			// top
+		boost::filesystem::absolute("Textures/Skybox/bottom.jpg").string(),			// bottom
+		boost::filesystem::absolute("Textures/Skybox/front.jpg").string(),			// front
+		boost::filesystem::absolute("Textures/Skybox/back.jpg").string(),			// back
 		},
-		true);
+	false);
 
 	Skybox skybox(10.0f, cubeTexture);
+
+	Texture2D sunTexture(boost::filesystem::absolute("Textures/sun.png").string(), true);
+	Billboard billboard;
+	billboard.Initialize();
+	billboard.SetTexture(sunTexture);
+	billboard.SetPosition(glm::vec3(0.0f, 0.0f, -5.0f));
+	billboard.SetSize(0.5f, 0.5f);
+
+	float lastFrame = 0.0f;
 
 	while (!glfwWindowShouldClose(window))
 	{
 		std::chrono::time_point<std::chrono::high_resolution_clock> currentFrameTime = std::chrono::high_resolution_clock::now();
-		int64_t delta = std::chrono::duration_cast<std::chrono::microseconds>(currentFrameTime - lastFrameTime).count();
+		delta = std::chrono::duration_cast<std::chrono::microseconds>(currentFrameTime - lastFrameTime).count();
 		lastFrameTime = currentFrameTime;
+
+		float currentFrame = glfwGetTime();
+		deltaTime = currentFrame - lastFrame;
+		lastFrame = currentFrame;
+
+		//camera.Update((float)delta / 1000.0f);
+		processInput(window);
 
 		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		camera.UpdatePosotion(delta / 1000.0f);
+		reflectionShader.Use();
+		reflectionShader.SetMat4("projection", camera.MakeProjectionMatrix());
+		reflectionShader.SetMat4("view", camera.MakeViewMatrix());
+		reflectionShader.SetVec3("viewPos", camera.GetPosition());
 
-		/*pickingShader.Use();
-		pickingShader.SetMat4("projection", camera.MakeProjectionMatrix());
-		pickingShader.SetMat4("view", camera.MakeViewMatrix());
+		RenderCube(reflectionShader, diffuseMap, normalMap, cubeTexture);
 
-		pickingTexture.EnableWriting();
-		gParams->gRenderPipeline->Render(pickingShader);
-
-		glClear(GL_DEPTH_BUFFER_BIT);
-
-		movableArrows.Render(pickingShader);
-
-		pickingTexture.DisableWriting();
-
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-		if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
-		{
-			double posX, posY;
-			glfwGetCursorPos(window, &posX, &posY);
-			auto pixel = pickingTexture.ReadPixel((size_t)posX, (size_t)(height - posY - 1));
-			
-			std::cout << pixel.ObjectID << std::endl;
-
-			if (pixel.ObjectID == 2)
-			{
-				boundingBoxShader.Use();
-				boundingBoxShader.SetMat4("projection", camera.MakeProjectionMatrix());
-				boundingBoxShader.SetMat4("view", camera.MakeViewMatrix());
-				boundingBox.Render(boundingBoxShader);
-			}
-		}
-
-		commonShader.Use();
-		commonShader.SetMat4("projection", camera.MakeProjectionMatrix());
-		commonShader.SetMat4("view", camera.MakeViewMatrix());
-		commonShader.SetVec3("viewPos", camera.Position());
-
-		gParams->gRenderPipeline->Render(commonShader);
-
-		glClear(GL_DEPTH_BUFFER_BIT);
-
-		movableArrowsShader.Use();
-		movableArrowsShader.SetMat4("projection", camera.MakeProjectionMatrix());
-		movableArrowsShader.SetMat4("view", camera.MakeViewMatrix());
-		movableArrows.Render(movableArrowsShader);*/
-
-		commonShader.Use();
+		/*commonShader.Use();
 		commonShader.SetMat4("projection", camera.MakeProjectionMatrix());
 		commonShader.SetMat4("view", camera.MakeViewMatrix());
 		commonShader.SetVec3("viewPos", camera.Position());
 		commonShader.SetVec3("lightPos", glm::vec3(0.0f, 0.0f, -5.0f));
+		model.Draw(commonShader);*/
 
-		RenderCube(commonShader, diffuseMap, normalMap);
-		//model.Draw(commonShader);
+		billboardingShader.Use();
+		billboardingShader.SetMat4("projection", camera.MakeProjectionMatrix());
+		billboardingShader.SetMat4("view", camera.MakeViewMatrix());
+		billboardingShader.SetVec3("viewPos", camera.GetPosition());
+		billboard.Draw(billboardingShader);
 
 		skyboxShader.Use();
 		skyboxShader.SetMat4("projection", camera.MakeProjectionMatrix());

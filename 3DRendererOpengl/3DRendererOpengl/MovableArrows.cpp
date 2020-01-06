@@ -5,6 +5,10 @@ MovableArrows::MovableArrows()
 {
 }
 
+MovableArrows::~MovableArrows()
+{
+}
+
 void MovableArrows::Draw(Shader& shader)
 {
 	auto t = this->objectID;
@@ -50,6 +54,26 @@ void MovableArrows::Draw(Shader& shader)
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	RenderArrows();
+}
+
+void MovableArrows::MousePressEvent(MouseEvent* event)
+{
+}
+
+void MovableArrows::MouseReleaseEvent(MouseEvent* event)
+{
+}
+
+void MovableArrows::MouseMoveEvent(MouseEvent* event)
+{
+}
+
+void MovableArrows::KeyPressEvent(KeyEvent* event)
+{
+}
+
+void MovableArrows::KeyReleaseEvent(KeyEvent* event)
+{
 }
 
 void MovableArrows::Initialize()

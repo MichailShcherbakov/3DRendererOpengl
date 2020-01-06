@@ -73,6 +73,15 @@
     <Filter Include="CubeTexture">
       <UniqueIdentifier>{9ab150cf-acdb-42d7-8ee4-74bb572a2a2a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shaders\Billboarding">
+      <UniqueIdentifier>{08f22c32-cea7-45b3-8ad3-ed749b9b29b2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Billboard">
+      <UniqueIdentifier>{d35876bb-074c-49de-8f56-0201d8820c95}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders\Reflection">
+      <UniqueIdentifier>{86a7c226-d170-4c6f-8091-01d5143cb88f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
@@ -124,6 +133,9 @@
     </ClCompile>
     <ClCompile Include="CubeTexture.cpp">
       <Filter>CubeTexture</Filter>
+    </ClCompile>
+    <ClCompile Include="Billboard.cpp">
+      <Filter>Billboard</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -186,6 +198,9 @@
     <ClInclude Include="CubeTexture.h">
       <Filter>CubeTexture</Filter>
     </ClInclude>
+    <ClInclude Include="Billboard.h">
+      <Filter>Billboard</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="pickingShader.vert">
@@ -223,6 +238,21 @@
     </None>
     <None Include="skyboxShader.vert">
       <Filter>Shaders\Skybox</Filter>
+    </None>
+    <None Include="billboardingShader.vert">
+      <Filter>Shaders\Billboarding</Filter>
+    </None>
+    <None Include="billboardingShader.frag">
+      <Filter>Shaders\Billboarding</Filter>
+    </None>
+    <None Include="billboardingShader.geom">
+      <Filter>Shaders\Billboarding</Filter>
+    </None>
+    <None Include="reflectionShader.vert">
+      <Filter>Shaders\Reflection</Filter>
+    </None>
+    <None Include="reflectionShader.frag">
+      <Filter>Shaders\Reflection</Filter>
     </None>
   </ItemGroup>
 </Project>

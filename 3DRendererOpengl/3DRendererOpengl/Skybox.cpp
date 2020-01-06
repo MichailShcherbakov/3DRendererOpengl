@@ -15,6 +15,7 @@ Skybox::Skybox(float size, const CubeTexture& diffuseMap)
 Skybox::~Skybox()
 {
 	glDeleteVertexArrays(1, &m_VAO);
+	glDeleteBuffers(1, &m_VBO);
 }
 
 void Skybox::Draw(Shader& shader)
@@ -38,6 +39,26 @@ void Skybox::Draw(Shader& shader)
 	glBindVertexArray(0);
 
 	glDepthFunc(GL_LESS);
+}
+
+void Skybox::MousePressEvent(MouseEvent* event)
+{
+}
+
+void Skybox::MouseReleaseEvent(MouseEvent* event)
+{
+}
+
+void Skybox::MouseMoveEvent(MouseEvent* event)
+{
+}
+
+void Skybox::KeyPressEvent(KeyEvent* event)
+{
+}
+
+void Skybox::KeyReleaseEvent(KeyEvent* event)
+{
 }
 
 void Skybox::Initialize(float size, const CubeTexture& diffuseMap)
@@ -90,12 +111,11 @@ void Skybox::Initialize(float size, const CubeTexture& diffuseMap)
 		 size, -size,  size
 	};
 
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-	GLuint VBO;
-	glGenVertexArrays(1, &m_VAO);
+	GLuint VAO, VBO;
+	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
-	glBindVertexArray(m_VAO);
+
+	glBindVertexArray(VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
@@ -107,4 +127,12 @@ void Skybox::Initialize(float size, const CubeTexture& diffuseMap)
 
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	m_VAO = VAO;
+	m_VBO = VBO;
+}
+
+CubeTexture Skybox::GetTexture() const
+{
+	return m_diffuseMap;
 }

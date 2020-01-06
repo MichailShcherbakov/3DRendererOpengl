@@ -73,7 +73,6 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath, const char* geo
 	m_ID = glCreateProgram();
 	glAttachShader(m_ID, vertex);
 	glAttachShader(m_ID, fragment);
-
 	if (geometryPath != nullptr)
 		glAttachShader(m_ID, geometry);
 

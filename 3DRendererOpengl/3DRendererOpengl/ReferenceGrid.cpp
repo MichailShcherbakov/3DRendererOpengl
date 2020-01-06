@@ -60,6 +60,26 @@ void ReferenceGrid::Draw(Shader& shader)
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
+void ReferenceGrid::MousePressEvent(MouseEvent* event)
+{
+}
+
+void ReferenceGrid::MouseReleaseEvent(MouseEvent* event)
+{
+}
+
+void ReferenceGrid::MouseMoveEvent(MouseEvent* event)
+{
+}
+
+void ReferenceGrid::KeyPressEvent(KeyEvent* event)
+{
+}
+
+void ReferenceGrid::KeyReleaseEvent(KeyEvent* event)
+{
+}
+
 void ReferenceGrid::Initialize()
 {
 	//gParams->gRenderPipeline->AddListener(this);

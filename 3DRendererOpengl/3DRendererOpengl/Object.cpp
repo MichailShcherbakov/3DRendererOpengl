@@ -2,7 +2,7 @@
 #include "Object.h"
 
 #include "GL/glew.h"
-#include "glfw3.h"
+#include "glfw/glfw3.h"
 #include "boost/filesystem.hpp"
 #include "MaterialLibrary.h"
 
@@ -21,11 +21,11 @@ Object::~Object()
 void Object::Draw(Shader& shader)
 {
 	shader.SetMat4("model", glm::scale(glm::mat4(1.0f), glm::vec3(0.5f)));
-	shader.SetUInt("objectID", (unsigned int)this->objectID);
+	shader.SetUInt("objectID", this->objectID);
 
-	for (size_t i = 0; i < m_VAOs.size(); ++i)
+	for (uint32_t i = 0; i < m_VAOs.size(); ++i)
 	{
-		shader.SetUInt("drawID", (unsigned int)i);
+		shader.SetUInt("drawID", i);
 
 		glBindVertexArray(m_VAOs[i]);
 
@@ -67,6 +67,27 @@ void Object::Draw(Shader& shader)
 		glDisableVertexAttribArray(3);
 		glDisableVertexAttribArray(4);
 	}
+}
+
+void Object::MousePressEvent(MouseEvent* event)
+{
+	std::cout << "Hi" << std::endl;
+}
+
+void Object::MouseReleaseEvent(MouseEvent* event)
+{
+}
+
+void Object::MouseMoveEvent(MouseEvent* event)
+{
+}
+
+void Object::KeyPressEvent(KeyEvent* event)
+{
+}
+
+void Object::KeyReleaseEvent(KeyEvent* event)
+{
 }
 
 void Object::Initialize(const std::string&  path)
@@ -135,10 +156,10 @@ void Object::Initialize(const std::string&  path)
 		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), vertices.data(), GL_STATIC_DRAW);
 
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)0);
-		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)(sizeof(glm::vec3)));
-		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)(sizeof(glm::vec3) * 2));
-		glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)(sizeof(glm::vec3) * 2 + sizeof(glm::vec2)));
-		glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)(sizeof(glm::vec3) * 3 + sizeof(glm::vec2)));
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)(offsetof(Vertex, Vertex::normal)));
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)(offsetof(Vertex, Vertex::texCoord)));
+		glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)(offsetof(Vertex, Vertex::tangent)));
+		glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)(offsetof(Vertex, Vertex::bitangent)));
 
 		m_numVertices.push_back((GLsizei)vertices.size());
 		m_VAOs.push_back(VAO);

@@ -21,8 +21,6 @@ uniform struct Material
 
 void main()
 {
-	vec3 lightPos = vec3(0.0f, -1.0f, -5.0f);
-
 	vec3 normal = texture(normalMap, TexCoord).rgb;
 	normal = normalize(normal * 2.0f - 1.0f);
 	normal = normalize(TBN * normal);

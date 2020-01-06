@@ -5,9 +5,9 @@
 
 struct PixelInfo
 {
-	unsigned int ObjectID = 0;
-	unsigned int DrawID = 0;
-	unsigned int PrimID = 0;
+	uint32_t ObjectID = 0;
+	uint32_t DrawID = 0;
+	uint32_t PrimID = 0;
 };
 
 class PickingTexture

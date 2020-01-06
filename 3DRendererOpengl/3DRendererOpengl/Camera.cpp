@@ -1,11 +1,14 @@
 #include "StdAfx.h"
 #include "Camera.h"
 
-#include "glfw3.h"
-
-glm::mat4 Camera::MakeViewMatrix()
+Camera::Camera()
 {
-	glm::mat4 rotationMatrix = glm::identity<glm::mat4>();
+	Update();
+}
+
+glm::mat4 Camera::MakeViewMatrix() const
+{
+	/*glm::mat4 rotationMatrix = glm::identity<glm::mat4>();
 	glm::mat4 translationMatrix = glm::identity<glm::mat4>();
 
 	rotationMatrix = glm::rotate(rotationMatrix, glm::radians(this->m_rotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
@@ -14,22 +17,39 @@ glm::mat4 Camera::MakeViewMatrix()
 
 	translationMatrix = glm::translate(translationMatrix, this->m_position);
 
-	return rotationMatrix * translationMatrix;
+	return rotationMatrix * translationMatrix;*/
+
+	return glm::lookAt(m_position, m_position + m_front, m_up);
 }
 
-glm::mat4 Camera::MakeTargetViewMatrix(glm::vec3 posTarget)
+glm::mat4 Camera::MakeProjectionMatrix() const
 {
-	return glm::lookAt(m_position, posTarget, glm::vec3(0.0f, 1.0f, 0.0f));
+	return glm::perspective(glm::radians(m_zoom), m_aspect, 0.1f, 100.0f);
 }
 
-glm::mat4 Camera::MakeProjectionMatrix()
+void Camera::SetAspect(float width, float height)
 {
-	return glm::perspective(m_FOV, m_aspectRatio, m_zNear, m_zFar);
+	m_aspect = width / height;
 }
 
-void Camera::UpdatePosotion(float deltaMs)
+void Camera::ProcessMouseScroll(float yoffset)
 {
-	if (IsMoving())
+	if (m_zoom >= 1.0f && m_zoom <= 45.0f)
+		m_zoom -= yoffset;
+	if (m_zoom <= 1.0f)
+		m_zoom = 1.0f;
+	if (m_zoom >= 45.0f)
+		m_zoom = 45.0f;
+}
+
+glm::vec3 Camera::GetPosition() const
+{
+	return m_position;
+}
+
+void Camera::Update()
+{
+	/*if (IsMoving())
 	{
 		glm::vec3 movementVectorLocal = glm::vec3(
 			(float)this->m_movement.x * ((this->m_movementSpeed / 1000.0f) * deltaMs),
@@ -44,64 +64,47 @@ void Camera::UpdatePosotion(float deltaMs)
 		);
 
 		m_position += movementVectorGlobal;
-	}
+	}*/
+
+	glm::vec3 front;
+	front.x = cos(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
+	front.y = sin(glm::radians(m_pitch));
+	front.z = sin(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
+	m_front = glm::normalize(front);
+	m_right = glm::normalize(glm::cross(m_front, m_worldUp));
+	m_up = glm::normalize(glm::cross(m_right, m_front));
 }
 
-void Camera::ProcessMouseMovement(float posX, float posY)
+void Camera::ProcessKeyboard(ECameraMovement direction, float deltaTime)
 {
-	float deltaX = mouseY - posY;
-	float deltaY = mouseX - posX;
-
-	m_rotation.x -= deltaX * m_mouseSensitivity;
-	m_rotation.y -= deltaY * m_mouseSensitivity;
-	
-	mouseX = posX;
-	mouseY = posY;
+	float velocity = m_movementSpeed * deltaTime;
+	if (direction == ECameraMovement::FORWARD)
+		m_position += m_front * velocity;
+	if (direction == ECameraMovement::BACKWARD)
+		m_position -= m_front * velocity;
+	if (direction == ECameraMovement::LEFT)
+		m_position -= m_right * velocity;
+	if (direction == ECameraMovement::RIGHT)
+		m_position += m_right * velocity;
 }
 
-void Camera::ProcessMousePosition(float posX, float posY)
+void Camera::ProcessMouseMovement(float xoffset, float yoffset)
 {
-	mouseX = posX;
-	mouseY = posY;
+	xoffset *= m_mouseSensitivity;
+	yoffset *= m_mouseSensitivity;
+
+	m_yaw += xoffset;
+	m_pitch += yoffset;
+
+	if (m_pitch > 89.0f)
+		m_pitch = 89.0f;
+	if (m_pitch < -89.0f)
+		m_pitch = -89.0f;
+
+	Update();
 }
 
-void Camera::ProcessKeyboard(ECameraMovement direction, bool reset)
-{
-	switch (direction)
-	{
-	case ECameraMovement::FORWARD:
-		if (reset)
-			m_movement.z = 0;
-		else
-			m_movement.z++;
-		break;
-	case ECameraMovement::BACKWARD:
-		if (reset)
-			m_movement.z = 0;
-		else
-			m_movement.z--;
-		break;
-	case ECameraMovement::LEFT:
-		if (reset)
-			m_movement.x = 0;
-		else
-			m_movement.x--;
-		break;
-	case ECameraMovement::RIGHT:
-		if (reset)
-			m_movement.x = 0;
-		else
-			m_movement.x++;
-		break;
-	}
-}
-
-glm::vec3 Camera::Position()
-{
-	return m_position;
-}
-
-bool Camera::IsMoving()
+bool Camera::IsMoving() const
 {
 	return m_movement.x != 0 || m_movement.y != 0 || m_movement.z != 0;
 }

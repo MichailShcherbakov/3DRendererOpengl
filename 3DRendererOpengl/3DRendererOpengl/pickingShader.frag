@@ -4,10 +4,10 @@
 
 out uvec3 FragColor;
 
-uniform uint objectIndex;
-uniform uint drawIndex;
+uniform uint objectID;
+uniform uint drawID;
 
 void main()
 {
-	FragColor = uvec3(objectIndex, drawIndex, gl_PrimitiveID + 1);
+	FragColor = uvec3(objectID, drawID, gl_PrimitiveID + 1);
 }

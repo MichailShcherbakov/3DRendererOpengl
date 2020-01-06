@@ -12,7 +12,12 @@
 class RenderPipeline
 {
 public:
-	void Render(Shader& shader);
+	void Draw(Shader& shader);
+	void MousePressEvent(MouseEvent* event, uint32_t objectID);
+	void MouseReleaseEvent(MouseEvent* event, uint32_t objectID);;
+	void MouseMoveEvent(MouseEvent* event, uint32_t objectID);
+	void KeyPressEvent(KeyEvent* event);
+	void KeyReleaseEvent(KeyEvent* event);
 	void AddListener(IRenderListener* listener);
 	void RemoveListener(IRenderListener* listener);
 

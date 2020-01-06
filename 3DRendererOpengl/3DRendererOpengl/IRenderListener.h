@@ -3,15 +3,52 @@
 
 #include "Shader.h"
 
+struct MouseEvent
+{
+	void Accept()
+	{
+		m_isAccepted = true;
+	}
+
+	bool IsAccepted() const
+	{
+		return m_isAccepted;
+	}
+
+private:
+	bool m_isAccepted = false;
+};
+
+struct KeyEvent
+{
+
+	void Accept()
+	{
+		m_isAccepted = true;
+	}
+
+	bool IsAccepted() const
+	{
+		return m_isAccepted;
+	}
+
+private:
+	bool m_isAccepted = false;
+};
+
 struct IRenderListener
 {
 	IRenderListener() { this->count++; this->objectID = this->count; }
+	virtual ~IRenderListener() {}
 
 	virtual void Draw(Shader& shader) = 0;
+	virtual void MousePressEvent(MouseEvent* event) = 0;
+	virtual void MouseReleaseEvent(MouseEvent* event) = 0;
+	virtual void MouseMoveEvent(MouseEvent* event) = 0;
+	virtual void KeyPressEvent(KeyEvent* event) = 0;
+	virtual void KeyReleaseEvent(KeyEvent* event) = 0;
 
 	static size_t count;
-
-protected:
 	size_t objectID = 0;
 };
 
