@@ -21,10 +21,10 @@ uniform struct Material
 
 void main()
 {
-	vec3 normal = texture(normalMap, TexCoord).rgb;
+	/*vec3 normal = texture(normalMap, TexCoord).rgb;
 	normal = normalize(normal * 2.0f - 1.0f);
-	normal = normalize(TBN * normal);
-	//vec3 normal = normalize(Normal);
+	normal = normalize(TBN * normal);*/
+	vec3 normal = normalize(Normal);
 
 	vec3 lightDir = normalize(lightPos - FragPos);
 	vec3 viewDir = normalize(viewPos - FragPos);

@@ -20,7 +20,7 @@ Object::~Object()
 
 void Object::Draw(Shader& shader)
 {
-	shader.SetMat4("model", glm::scale(glm::mat4(1.0f), glm::vec3(0.5f)));
+	shader.SetMat4("model", glm::scale(glm::mat4(1.0f), glm::vec3(0.001f)));
 	shader.SetUInt("objectID", this->objectID);
 
 	for (uint32_t i = 0; i < m_VAOs.size(); ++i)
@@ -35,7 +35,7 @@ void Object::Draw(Shader& shader)
 		glEnableVertexAttribArray(3);
 		glEnableVertexAttribArray(4);
 
-		if (m_pMaterialLibrary && m_pMaterialLibrary->IsLoaded())
+		if (m_pMaterialLibrary && !m_pMaterialLibrary->IsEmpty())
 		{
 			auto material = m_pMaterialLibrary->GetMaterial(m_materialsName[i]);
 
@@ -56,7 +56,14 @@ void Object::Draw(Shader& shader)
 			}
 		}
 
-		glDrawArrays(GL_TRIANGLES, 0, m_numVertices[i]);
+		if (i < m_numIndices.size() && i >= 0)
+		{
+			glDrawElements(GL_TRIANGLES, m_numIndices[i], GL_UNSIGNED_INT, (const void*)0);
+		}
+		else
+		{
+			glDrawArrays(GL_TRIANGLES, 0, m_numVertices[i]);
+		}
 
 		glBindVertexArray(0);
 		glBindTexture(GL_TEXTURE_2D, 0);
@@ -111,11 +118,11 @@ void Object::Initialize(const std::string&  path)
 	glEnableVertexAttribArray(3);
 	glEnableVertexAttribArray(4);
 
-	for (const Mesh* mesh : meshes)
+	for (Mesh* mesh : meshes)
 	{
 		auto vertices = mesh->GetPolygonVertices();
 
-		if (m_pMaterialLibrary && m_pMaterialLibrary->IsLoaded())
+		if (m_pMaterialLibrary && !m_pMaterialLibrary->IsEmpty())
 		{
 			auto material = m_pMaterialLibrary->GetMaterial(mesh->GetMaterialName());
 
@@ -154,6 +161,19 @@ void Object::Initialize(const std::string&  path)
 		glBindVertexArray(VAO);
 		glBindBuffer(GL_ARRAY_BUFFER, VBO);
 		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), vertices.data(), GL_STATIC_DRAW);
+
+		if (mesh->HasIndices())
+		{
+			auto indices = mesh->GetIndices();
+
+			GLuint IBO;
+
+			glGenBuffers(1, &IBO);
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
+			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * indices.size(), indices.data(), GL_STATIC_DRAW);
+
+			m_numIndices.push_back((GLsizei)indices.size());
+		}
 
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)0);
 		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)(offsetof(Vertex, Vertex::normal)));

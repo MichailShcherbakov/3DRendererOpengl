@@ -151,6 +151,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AssimpLoader.cpp" />
     <ClCompile Include="Billboard.cpp" />
     <ClCompile Include="BoundingBox.cpp" />
     <ClCompile Include="Camera.cpp" />
@@ -177,6 +178,7 @@
     <ClCompile Include="Texture2D.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AssimpLoader.h" />
     <ClInclude Include="Billboard.h" />
     <ClInclude Include="BoundingBox.h" />
     <ClInclude Include="Camera.h" />

@@ -1,6 +1,17 @@
 #include "StdAfx.h"
 #include "Material.h"
 
+Material::Material(const std::string& title, const Texture2D* texture) :
+	m_title(title),
+	m_specularExponent(0.0f),
+	m_ambient(glm::vec3(1.0f)),
+	m_diffuse(glm::vec3(1.0f)),
+	m_specular(glm::vec3(1.0f)),
+	m_dissolveExponent(1.0f),
+	m_diffuseMap(texture)
+{
+}
+
 std::string Material::GetTitle() const
 {
 	return m_title;
@@ -41,17 +52,17 @@ void Material::SetSpecularExponent(float exponent)
 	m_specularExponent = exponent;
 }
 
-void Material::SetAmbient(glm::vec3& exponent)
+void Material::SetAmbient(const glm::vec3& exponent)
 {
 	m_ambient = exponent;
 }
 
-void Material::SetDiffuse(glm::vec3& exponent)
+void Material::SetDiffuse(const glm::vec3& exponent)
 {
 	m_diffuse = exponent;
 }
 
-void Material::SetSpecular(glm::vec3& exponent)
+void Material::SetSpecular(const glm::vec3& exponent)
 {
 	m_specular = exponent;
 }

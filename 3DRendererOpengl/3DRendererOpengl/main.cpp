@@ -15,6 +15,7 @@ size_t IRenderListener::count = 0;
 #include "ReferenceGrid.h"
 #include "MovableArrows.h"
 #include "MaterialLibrary.h"
+#include "AssimpLoader.h"
 
 #include "glfw/glfw3.h"
 #include "boost/filesystem.hpp"
@@ -373,8 +374,8 @@ int main()
 	MovableArrows movableArrows;
 	
 	Object model;
-	model.SetLoader(new ObjLoader());
-	model.Initialize(boost::filesystem::absolute("Models/medieval house.obj").string());
+	model.SetLoader(new AssimpLoader());
+	model.Initialize(boost::filesystem::absolute("Models/deer.obj").string());
 	model.SetBoundingBox(&boundingBox);
 
 	std::chrono::time_point<std::chrono::high_resolution_clock> lastFrameTime;
@@ -394,11 +395,12 @@ int main()
 
 	Skybox skybox(10.0f, cubeTexture);
 
-	Texture2D sunTexture(boost::filesystem::absolute("Textures/sun.png").string(), true);
+	//Texture2D sunTexture(boost::filesystem::absolute("Textures/bulb.png").string()), true);
+	Texture2D sunTexture(boost::filesystem::absolute("Textures/sun7.png").string(), true);
 	Billboard billboard;
 	billboard.Initialize();
 	billboard.SetTexture(sunTexture);
-	billboard.SetPosition(glm::vec3(0.0f, 0.0f, -5.0f));
+	billboard.SetPosition(glm::vec3(0.0f, 0.0f, 5.0f));
 	billboard.SetSize(0.5f, 0.5f);
 
 	float lastFrame = 0.0f;
@@ -419,19 +421,19 @@ int main()
 		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		reflectionShader.Use();
+		/*reflectionShader.Use();
 		reflectionShader.SetMat4("projection", camera.MakeProjectionMatrix());
 		reflectionShader.SetMat4("view", camera.MakeViewMatrix());
 		reflectionShader.SetVec3("viewPos", camera.GetPosition());
 
-		RenderCube(reflectionShader, diffuseMap, normalMap, cubeTexture);
+		RenderCube(reflectionShader, diffuseMap, normalMap, cubeTexture);*/
 
-		/*commonShader.Use();
+		commonShader.Use();
 		commonShader.SetMat4("projection", camera.MakeProjectionMatrix());
 		commonShader.SetMat4("view", camera.MakeViewMatrix());
-		commonShader.SetVec3("viewPos", camera.Position());
-		commonShader.SetVec3("lightPos", glm::vec3(0.0f, 0.0f, -5.0f));
-		model.Draw(commonShader);*/
+		commonShader.SetVec3("viewPos", camera.GetPosition());
+		commonShader.SetVec3("lightPos", glm::vec3(0.0f, 0.0f, 5.0f));
+		model.Draw(commonShader);
 
 		billboardingShader.Use();
 		billboardingShader.SetMat4("projection", camera.MakeProjectionMatrix());

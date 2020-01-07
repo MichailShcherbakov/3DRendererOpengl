@@ -59,8 +59,7 @@ void MaterialLibrary::Load(const std::string& path)
 			if (fmaterial != m_materials.end())
 				continue;
 
-			material = new Material();
-			material->SetTitle(title);
+			material = new Material(title);
 
 			m_materials.push_back(material);
 		}
@@ -123,9 +122,14 @@ void MaterialLibrary::Load(const std::string& path)
 	m_isLoaded = true;
 }
 
-bool MaterialLibrary::IsLoaded()
+bool MaterialLibrary::IsLoaded() const
 {
 	return m_isLoaded;
+}
+
+bool MaterialLibrary::IsEmpty() const
+{
+	return m_materials.empty();
 }
 
 const Material* MaterialLibrary::GetMaterial(const std::string& title)
@@ -136,6 +140,15 @@ const Material* MaterialLibrary::GetMaterial(const std::string& title)
 		return *material;
 
 	return nullptr;
+}
+
+void MaterialLibrary::SetMaterial(const Material* material)
+{
+	if (std::find(m_textures.begin(), m_textures.end(), material->GetTexture()) == m_textures.end())
+		m_textures.push_back(material->GetTexture());
+
+	if (std::find(m_materials.begin(), m_materials.end(), material) == m_materials.end())
+		m_materials.push_back(material);
 }
 
 void MaterialLibrary::Clear()

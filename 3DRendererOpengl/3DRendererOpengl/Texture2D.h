@@ -9,14 +9,14 @@ class Texture2D
 public:
 	Texture2D();
 	Texture2D(const std::string& path, bool mirrored = false);
+	Texture2D(const void* data, GLuint width, GLuint height);
 	~Texture2D();
 
 public:
 	void Load(const std::string& path, bool mirrored = false);
 	bool IsLoaded() const;
-	bool IsLoaded();
 	GLuint GetHandle() const;
-	GLuint GetHandle();
+	void Clear();
 
 private:
 	GLuint m_handle;

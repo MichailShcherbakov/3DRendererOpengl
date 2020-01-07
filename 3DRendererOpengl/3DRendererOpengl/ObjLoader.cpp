@@ -64,8 +64,6 @@ void ObjLoader::Load(const std::string& path, std::vector<Mesh*>& meshes, IMater
 			file >> vertex.y;
 			file >> vertex.z;
 
-			vertex *= -1; /* inverse */
-
 			objMesh->vertices.push_back(vertex);
 		}
 		else if (strcmp(str, "vn") == 0 && objMesh)

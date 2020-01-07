@@ -22,5 +22,20 @@ namespace LogSystem
 #define MSG(type, msg) \
 LogSystem::Msg(type, msg, __FILE__, __FUNCTION__, __LINE__);
 
+#define Log(msg) \
+LogSystem::Msg(ETypeMessage::Log, msg, __FILE__, __FUNCTION__, __LINE__);
+
+#define LogSuccess(msg) \
+LogSystem::Msg(ETypeMessage::Success, msg, __FILE__, __FUNCTION__, __LINE__);
+
+#define LogWarning(msg) \
+LogSystem::Msg(ETypeMessage::Warning, msg, __FILE__, __FUNCTION__, __LINE__);
+
+#define LogError(msg) \
+LogSystem::Msg(ETypeMessage::Error, msg, __FILE__, __FUNCTION__, __LINE__);
+
+#define LogFatalError(msg) \
+LogSystem::Msg(ETypeMessage::FatalError, msg, __FILE__, __FUNCTION__, __LINE__);
+
 #endif // _LOG_SYSTEM_H_
 

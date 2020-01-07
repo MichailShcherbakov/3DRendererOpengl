@@ -7,8 +7,10 @@
 struct IMaterialLibrary
 {
 	virtual void Load(const std::string& path) = 0;
-	virtual bool IsLoaded() = 0;
+	virtual bool IsLoaded() const = 0;
+	virtual bool IsEmpty() const = 0;
 	virtual const Material* GetMaterial(const std::string& title) = 0;
+	virtual void SetMaterial(const Material* material) = 0;
 
 protected:
 	bool m_isLoaded = false;

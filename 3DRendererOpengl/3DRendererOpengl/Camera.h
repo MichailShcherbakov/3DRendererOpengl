@@ -30,7 +30,7 @@ public:
 	void ProcessMouseMovement(float xoffset, float yoffset);
 	void ProcessMouseScroll(float yoffset);
 
-	glm::vec3 m_position = glm::vec3(0.0f, 0.0f, 5.0f);
+	glm::vec3 m_position = glm::vec3(0.0f, 2.0f, 8.0f);
 	glm::i8vec3 m_movement = glm::i8vec3(0, 0, 0);
 	glm::vec3 m_rotation = glm::vec3(0.0f, 180.0f, 0.0f);
 

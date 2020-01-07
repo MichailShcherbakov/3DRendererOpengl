@@ -82,6 +82,9 @@
     <Filter Include="Shaders\Reflection">
       <UniqueIdentifier>{86a7c226-d170-4c6f-8091-01d5143cb88f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="AssimpLoader">
+      <UniqueIdentifier>{eeae17ed-a826-4021-98da-046ff1005f0d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
@@ -136,6 +139,9 @@
     </ClCompile>
     <ClCompile Include="Billboard.cpp">
       <Filter>Billboard</Filter>
+    </ClCompile>
+    <ClCompile Include="AssimpLoader.cpp">
+      <Filter>AssimpLoader</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -200,6 +206,9 @@
     </ClInclude>
     <ClInclude Include="Billboard.h">
       <Filter>Billboard</Filter>
+    </ClInclude>
+    <ClInclude Include="AssimpLoader.h">
+      <Filter>AssimpLoader</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

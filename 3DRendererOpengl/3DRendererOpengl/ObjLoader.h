@@ -3,6 +3,13 @@
 
 #include "ILoader.h"
 
+struct Index
+{
+	unsigned int vertex = 0;
+	unsigned int uv = 0;
+	unsigned int normal = 0;
+};
+
 class ObjLoader : public ILoader
 {
 public:

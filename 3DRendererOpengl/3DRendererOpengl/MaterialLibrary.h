@@ -15,8 +15,10 @@ public:
 public:
 	// IMaterialLibrary
 	virtual void Load(const std::string& path) override;
-	virtual bool IsLoaded() override;
+	virtual bool IsLoaded() const override;
+	virtual bool IsEmpty() const override;
 	virtual const Material* GetMaterial(const std::string& title) override;
+	virtual void SetMaterial(const Material* material) override;
 	//~IMaterialLibrary
 	
 private:

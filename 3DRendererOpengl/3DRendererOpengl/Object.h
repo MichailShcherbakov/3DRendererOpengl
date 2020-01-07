@@ -32,6 +32,7 @@ private:
 	BoundingBox* m_pBoundingBox = nullptr;
 	std::vector<GLuint> m_VAOs;
 	std::vector<GLsizei> m_numVertices;
+	std::vector<GLsizei> m_numIndices;
 	std::vector<std::string> m_materialsName;
 	float minX, maxX, minY, maxY, minZ, maxZ;
 	
